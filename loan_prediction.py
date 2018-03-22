@@ -1,19 +1,16 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import generic_functions as util
 
 
 
 
-def percConvert(ser):
-  return ser/float(ser[-1])*100
 
-def readFile() : 
-  return pd.read_csv("dataset\\train_loanprediction.csv")
 
 
 show_graphs=False
-df = readFile()
+df = util.readLoanHistoryFile()
 
 print("type(df) : ", type(df))   #  <class 'pandas.core.frame.DataFrame'>
 print("type(df['Gender']) : ",type(df['Gender']))  # <class 'pandas.core.series.Series'>
@@ -38,7 +35,7 @@ print(df['Gender'].value_counts())
 print("\n--Draw histogram of the DataFrame’s series using matplotlib / pylab. -- \n")
 
 df['ApplicantIncome'].hist(bins=500)
-# plt.show()
+#plt.show()
 
 print("\n-- Filtered data set with conditions and reduced columns -- \n")
 df_filtered = df.loc[(df["Gender"]=="Female") & (df["Education"]=="Not Graduate")
@@ -80,7 +77,7 @@ if show_graphs :
 print('-- gender vs loan status correlation , using cross tab  --')
 gender_loanstatus_crosstab = pd.crosstab(df['Gender'] , df['Loan_Status'] ,margins=True)
 print(gender_loanstatus_crosstab)
-print(gender_loanstatus_crosstab.apply(percConvert , axis=1))
+print(gender_loanstatus_crosstab.apply(util.percConvert , axis=1))
 
 #group by
 

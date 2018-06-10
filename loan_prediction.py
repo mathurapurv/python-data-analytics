@@ -3,12 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import generic_functions as util
 
-
-
-
-
-
-
 show_graphs=False
 df = util.readLoanHistoryFile()
 
@@ -21,7 +15,11 @@ print("\n-- Print top 2 rows of the data frame --\n")
 print(df.head(2))
 
 print("\n-- Print df[2:5]  --\n")
-print(df[2:5]) 
+print(df[2:5])
+
+print("\n-- Print df[['Gender','Married','Dependents']][2:5]   --\n")
+print(df[['Gender','Married','Dependents']][2:5])
+
 
 print("\n-- Describe the data set -- \n")
 print(df.describe())
@@ -38,18 +36,22 @@ df['ApplicantIncome'].hist(bins=500)
 #plt.show()
 
 print("\n-- Filtered data set with conditions and reduced columns -- \n")
-df_filtered = df.loc[(df["Gender"]=="Female") & (df["Education"]=="Not Graduate")
-             & (df["Loan_Status"]=="Y"), 
-             ["Gender","Education","Loan_Status",
-             "ApplicantIncome","CoapplicantIncome",
-             "LoanAmount"]]  
+df_filtered = df.loc[
+                        (df["Gender"]=="Female") & (df["Education"]=="Not Graduate") & (df["Loan_Status"]=="Y"),
+                        ["Gender","Education","Loan_Status","ApplicantIncome","CoapplicantIncome","LoanAmount"]
+]
 print(df_filtered)
 df_filtered['ApplicantIncome'].hist(bins=50)
 
 print ('\n-- Probility of getting loan for each Credit History class --\n' )
+
+# select   Credit_History , mean(Loan_Status)    from dataframe
+#  where
+# group by Credit_History
+
 df_pivot = df.pivot_table(values='Loan_Status',
             index=['Credit_History'],
-            aggfunc=lambda x: x.map({'Y':1,'N':0}).mean())  
+            aggfunc=lambda x: x.map({'Y':100.0,'N':0.0}).mean())
 
 
 print (df_pivot)
@@ -60,6 +62,8 @@ impute_grps = df.pivot_table(values=["LoanAmount"],
                 index=["Gender","Married","Self_Employed"],
                 aggfunc=np.mean)
 print(impute_grps)
+
+
 
 # avergae income grouped  by  gender 
 print("\n-- avergae income grouped  by  gender  --\n ")  
@@ -104,7 +108,37 @@ print("\n-- avergae ApplicantIncome by education and propertytype   --\n")
 print(data_aggregatedby_Education_Property_Area['ApplicantIncome'].mean())  
 
 
-#print(data_aggregatedby_Education_Property_Area['Dependents'].apply(lambda x:   ', '.join(x) )   ) 
+# concatenate data frames
+
+df_part1 = pd.DataFrame(
+    { 'A' : [1,2,3,4,5],
+    'B' : ['a','b','c','d','e'] }
+)
+
+df_part2 = pd.DataFrame(
+    { 'A' : [6,7,8],
+    'B' : ['f','g','h'] }
+)
+
+print(df_part1)
+print(df_part2)
+
+df_stacked =   pd.concat([df_part1, df_part2]);
+
+print(df_stacked)
+
+df_part3 = pd.DataFrame(
+    { 'A' : [6,7],
+    'C' : ['f','g'] }
+)
+
+print("\n--  pd.concat([df_part1, df_part2]) --\n")
+df_stacked =   pd.concat([df_part1, df_part2])
+print(df_stacked)
+
+print("\n--  pd.concat([df_part1, df_part3] , axis=1) --\n")
+df_stacked =   pd.concat([df_part1, df_part3] , axis=1);
+print(df_stacked)
 
 
 print("\n--   --\n")
